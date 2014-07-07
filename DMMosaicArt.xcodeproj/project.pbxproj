@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AF8BAAC81969213F00460246 /* nurupo.png in Resources */ = {isa = PBXBuildFile; fileRef = AF8BAAC71969213F00460246 /* nurupo.png */; };
 		AFB43FC4195C8BDB009E1BFE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AFB43FC3195C8BDB009E1BFE /* main.m */; };
 		AFB43FC7195C8BDB009E1BFE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AFB43FC6195C8BDB009E1BFE /* AppDelegate.m */; };
 		AFB43FCA195C8BDC009E1BFE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = AFB43FC9195C8BDC009E1BFE /* ViewController.m */; };
@@ -35,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AF8BAAC71969213F00460246 /* nurupo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nurupo.png; sourceTree = "<group>"; };
 		AFB43FBE195C8BDB009E1BFE /* DMMosaicArt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DMMosaicArt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFB43FC2195C8BDB009E1BFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AFB43FC3195C8BDB009E1BFE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 				AFC55C1B195DDEB400F6CC8D /* SVProgressHUD */,
 				AFC55C42195DEA5A00F6CC8D /* MCProgressBar */,
 				AFB43FE4195C8D8B009E1BFE /* miku.jpg */,
+				AF8BAAC71969213F00460246 /* nurupo.png */,
 				AFB43FC5195C8BDB009E1BFE /* AppDelegate.h */,
 				AFB43FC6195C8BDB009E1BFE /* AppDelegate.m */,
 				AFB43FC8195C8BDC009E1BFE /* ViewController.h */,
@@ -248,6 +251,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AFC55C4B195DEB8900F6CC8D /* progress-bg@2x.png in Resources */,
+				AF8BAAC81969213F00460246 /* nurupo.png in Resources */,
 				AFC55C4C195DEB8900F6CC8D /* progress-fg.png in Resources */,
 				AFB43FCD195C8BDC009E1BFE /* Main.storyboard in Resources */,
 				AFC55C4A195DEB8900F6CC8D /* progress-bg.png in Resources */,

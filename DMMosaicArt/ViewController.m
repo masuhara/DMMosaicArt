@@ -24,7 +24,6 @@
     [super viewDidLoad];
     
     //初期化
-    effected = NO;
     mainImageView.image = [UIImage imageNamed:@"miku.jpg"];
     labelX.text = [NSString stringWithFormat:@"%d", (int)mainImageView.image.size.width];
     labelY.text = [NSString stringWithFormat:@"%d", (int)mainImageView.image.size.height];
@@ -32,7 +31,7 @@
     
     UIImage *backgroundImage = [[UIImage imageNamed:@"progress-bg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)];
     UIImage *foregroundImage = [[UIImage imageNamed:@"progress-fg"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 10, 0, 10)];
-    mcProgressBarView = [[MCProgressBarView alloc] initWithFrame:CGRectMake(40, 70, 240, 20) backgroundImage:backgroundImage foregroundImage:foregroundImage];
+    mcProgressBarView = [[MCProgressBarView alloc] initWithFrame:CGRectMake(40, 55, 240, 20) backgroundImage:backgroundImage foregroundImage:foregroundImage];
     mcProgressBarView.progress = 0.0f;
     [self.view addSubview:mcProgressBarView];
 }
@@ -41,6 +40,9 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
+
 
 #pragma makr - Private 
 
@@ -58,24 +60,57 @@
 //        
 //    }
     
-    views = [[NSMutableArray alloc] init];
-    
-    //分割
-    [mainImageView removeFromSuperview];
-    mainImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 140, 320, 320)];
-    mainImageView.image = [UIImage imageNamed:@"miku.jpg"];
-    [mainImageView clipsToBounds];
-    
-    NSArray *imageViews = [self divideImage:mainImageView.image];
-    
-    for (UIImageView *iv in imageViews) {
+    if (!views) {
+        views = [[NSMutableArray alloc] init];
         
-        [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.1]];
-        iv.frame = CGRectMake(iv.frame.origin.x, iv.frame.origin.y + 140, iv.frame.size.height, iv.frame.size.width);
-        [self.view addSubview:iv];
-        [views addObject:iv];
+        //分割
+        [mainImageView removeFromSuperview];
+        mainImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80, 320, 320)];
+        mainImageView.image = [UIImage imageNamed:@"miku.jpg"];
+        [mainImageView clipsToBounds];
+        
+        NSArray *imageViews = [self divideImage:mainImageView.image];
+        
+        for (UIImageView *iv in imageViews) {
+            
+            //TODO: make
+            [self checkRGB];
+            
+            //[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+            iv.frame = CGRectMake(iv.frame.origin.x, iv.frame.origin.y + 80, iv.frame.size.height, iv.frame.size.width);
+            iv.image = [UIImage imageNamed:@"nurupo.png"];
+            [self.view addSubview:iv];
+            [views addObject:iv];
+        }
     }
+}
+
+- (IBAction)nurupo
+{
+//    int numberOfImages = (int)[views count];
+//    int randNum = arc4random_uniform(numberOfImages);
+//    [views[randNum] removeFromSuperview];
+    UIImage *rawImage = [UIImage imageNamed:@"miku.jpg"];
     
+    UIImage *resizedImage = [self resizeAspectFitWithSize:rawImage size:rawImage.size];
+    mainImageView.image = resizedImage;
+}
+
+- (UIImage*)resizeAspectFitWithSize:(UIImage *)srcImg size:(CGSize)size {
+    
+    CGFloat widthRatio  = size.width  / srcImg.size.width;
+    CGFloat heightRatio = size.height / srcImg.size.height;
+    CGFloat ratio = (widthRatio < heightRatio) ? widthRatio : heightRatio;
+    
+    CGSize resizedSize = CGSizeMake(srcImg.size.width*ratio, srcImg.size.height*ratio);
+    
+    UIGraphicsBeginImageContext(resizedSize);
+    [srcImg drawInRect:CGRectMake(0, 0, resizedSize.width, resizedSize.height)];
+    UIImage* resizedImage = UIGraphicsGetImageFromCurrentImageContext();
+    
+    UIGraphicsEndImageContext();
+    
+    return resizedImage;
 }
 
 
@@ -98,11 +133,14 @@
 
 - (IBAction)reset
 {
-    effected = NO;
-    mainImageView.layer.shouldRasterize = NO;
-    mainImageView.layer.rasterizationScale = 1.0;
-    mainImageView.layer.minificationFilter = nil;
-    mainImageView.layer.magnificationFilter= nil;
+    views = nil;
+    [mainImageView removeFromSuperview];
+    mainImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80, 320, 320)];
+    mainImageView.image = [UIImage imageNamed:@"miku.jpg"];
+//    mainImageView.layer.shouldRasterize = NO;
+//    mainImageView.layer.rasterizationScale = 1.0;
+//    mainImageView.layer.minificationFilter = nil;
+//    mainImageView.layer.magnificationFilter= nil;
 }
 
 
@@ -115,29 +153,34 @@
     
     // ビットマップデータを取得する
     CFDataRef dataRef = CGDataProviderCopyData(dataProvider);
-    UInt8* buffer = (UInt8*)CFDataGetBytePtr(dataRef);
+    UInt8 *buffer = (UInt8*)CFDataGetBytePtr(dataRef);
     
     size_t bytesPerRow = CGImageGetBytesPerRow(imageRef);
+    
+    
+    UInt8 *pixelPtr;
+    UInt8 r;
+    UInt8 g;
+    UInt8 b;
+    
+    
+    
     
     // 画像全体を１ピクセルずつ走査する
     for (checkX = 0; checkX < mainImageView.image.size.width; checkX++) {
         for (int y=0; y< mainImageView.image.size.height; y++) {
             // ピクセルのポインタを取得する
-            UInt8 *pixelPtr = buffer + (int)(y) * bytesPerRow + (int)(checkX) * 4;
+            pixelPtr = buffer + (int)(y) * bytesPerRow + (int)(checkX) * 4;
             
             // 色情報を取得する
-            UInt8 r = *(pixelPtr + 2);  // 赤
-            UInt8 g = *(pixelPtr + 1);  // 緑
-            UInt8 b = *(pixelPtr + 0);  // 青
+            r = *(pixelPtr + 2);  // 赤
+            g = *(pixelPtr + 1);  // 緑
+            b = *(pixelPtr + 0);  // 青
             
             NSLog(@"x:%d y:%d R:%d G:%d B:%d", checkX, y, r, g, b);
         }
-        
-        
-        
     }
     CFRelease(dataRef);
-    
 }
 
 
@@ -200,8 +243,17 @@
 //    }
 //}
 
-
-
+//- (UIColor *)getAverageColor
+//{
+//    // Get an averaged color.
+//    self.averagedColor = [UIColor colorWithRed:aveR green:aveG blue:aveB alpha:1.0];
+//    
+//    // Get a complementary color.
+//    aveR = 1.0f - aveR;
+//    aveG = 1.0f - aveG;
+//    aveB = 1.0f - aveB;
+//    self.complementaryColors = [UIColor colorWithRed:aveR green:aveG blue:aveB alpha:1.0];
+//}
 
 
 

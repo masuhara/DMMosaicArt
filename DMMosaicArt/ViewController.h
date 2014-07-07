@@ -14,7 +14,6 @@
     IBOutlet UILabel *labelX;
     IBOutlet UILabel *labelY;
     IBOutlet UIImageView *mainImageView;
-    BOOL effected;
     
     int checkX;
     int checkY;
