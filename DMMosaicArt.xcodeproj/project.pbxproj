@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AF0449B519722F4D00ECCBD9 /* reiji.jpeg in Resources */ = {isa = PBXBuildFile; fileRef = AF0449B419722F4D00ECCBD9 /* reiji.jpeg */; };
+		AF0449B719723EEA00ECCBD9 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF0449B619723EEA00ECCBD9 /* CoreGraphics.framework */; };
 		AF8BAAC81969213F00460246 /* nurupo.png in Resources */ = {isa = PBXBuildFile; fileRef = AF8BAAC71969213F00460246 /* nurupo.png */; };
 		AFB43FC4195C8BDB009E1BFE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = AFB43FC3195C8BDB009E1BFE /* main.m */; };
 		AFB43FC7195C8BDB009E1BFE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = AFB43FC6195C8BDB009E1BFE /* AppDelegate.m */; };
@@ -36,6 +38,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		AF0449B419722F4D00ECCBD9 /* reiji.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = reiji.jpeg; sourceTree = "<group>"; };
+		AF0449B619723EEA00ECCBD9 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
 		AF8BAAC71969213F00460246 /* nurupo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = nurupo.png; sourceTree = "<group>"; };
 		AFB43FBE195C8BDB009E1BFE /* DMMosaicArt.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DMMosaicArt.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AFB43FC2195C8BDB009E1BFE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -76,6 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AF0449B719723EEA00ECCBD9 /* CoreGraphics.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,6 +90,7 @@
 		AFB43FB5195C8BDA009E1BFE = {
 			isa = PBXGroup;
 			children = (
+				AF0449B619723EEA00ECCBD9 /* CoreGraphics.framework */,
 				AFC55C15195DDB1100F6CC8D /* QuartzCore.framework */,
 				AFB43FC0195C8BDB009E1BFE /* DMMosaicArt */,
 				AFB43FD7195C8BDC009E1BFE /* DMMosaicArtTests */,
@@ -107,6 +113,7 @@
 				AFC55C1B195DDEB400F6CC8D /* SVProgressHUD */,
 				AFC55C42195DEA5A00F6CC8D /* MCProgressBar */,
 				AFB43FE4195C8D8B009E1BFE /* miku.jpg */,
+				AF0449B419722F4D00ECCBD9 /* reiji.jpeg */,
 				AF8BAAC71969213F00460246 /* nurupo.png */,
 				AFB43FC5195C8BDB009E1BFE /* AppDelegate.h */,
 				AFB43FC6195C8BDB009E1BFE /* AppDelegate.m */,
@@ -259,6 +266,7 @@
 				AFB43FCF195C8BDC009E1BFE /* Images.xcassets in Resources */,
 				AFC55C4D195DEB8900F6CC8D /* progress-fg@2x.png in Resources */,
 				AFC55C20195DDEB400F6CC8D /* SVProgressHUD.bundle in Resources */,
+				AF0449B519722F4D00ECCBD9 /* reiji.jpeg in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

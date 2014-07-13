@@ -14,17 +14,16 @@
     IBOutlet UILabel *labelX;
     IBOutlet UILabel *labelY;
     IBOutlet UIImageView *mainImageView;
+    IBOutlet UIImageView *currentImageView;
+    UIImage *resizedImage;//リサイズ後の画像
     
-    int checkX;
-    int checkY;
+    //int checkX;
+    //int checkY;
     
     NSTimer *timer;
     NSMutableArray *views;
 }
 
-- (IBAction)mosaicEffect;
-- (IBAction)makeMosaicArt;
-- (IBAction)reset;
 
 
 @end

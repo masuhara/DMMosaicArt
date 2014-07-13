@@ -11,7 +11,7 @@
 #import "MCProgressBarView.h"
 
 @interface ViewController ()
-            
+
 
 @end
 
@@ -19,12 +19,12 @@
 {
     MCProgressBarView *mcProgressBarView;
 }
-            
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
     //初期化
-    mainImageView.image = [UIImage imageNamed:@"miku.jpg"];
+    mainImageView.image = [UIImage imageNamed:@"reiji.jpeg"];
     labelX.text = [NSString stringWithFormat:@"%d", (int)mainImageView.image.size.width];
     labelY.text = [NSString stringWithFormat:@"%d", (int)mainImageView.image.size.height];
     
@@ -44,110 +44,98 @@
 
 
 
-#pragma makr - Private 
+#pragma makr - Private
 
-- (IBAction)mosaicEffect
-{
-//    if (effected == NO) {
-//        effected = YES;
-//        
-//        //ベクター画像をラスタライズする(ラスター化/ビットマップ化)
-//        mainImageView.layer.shouldRasterize = YES;
-//        //スケールを20%に縮小(元画像を小さくしてから再度拡大)
-//        mainImageView.layer.rasterizationScale = 0.2;
-//        mainImageView.layer.minificationFilter = kCAFilterTrilinear;
-//        mainImageView.layer.magnificationFilter= kCAFilterNearest;
-//        
-//    }
-    
-    if (!views) {
-        views = [[NSMutableArray alloc] init];
-        
-        //分割
-        [mainImageView removeFromSuperview];
-        mainImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80, 320, 320)];
-        mainImageView.image = [UIImage imageNamed:@"miku.jpg"];
-        [mainImageView clipsToBounds];
-        
-        NSArray *imageViews = [self divideImage:mainImageView.image];
-        
-        for (UIImageView *iv in imageViews) {
-            
-            //TODO: make
-            [self checkRGB];
-            
-            //[[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
-            iv.frame = CGRectMake(iv.frame.origin.x, iv.frame.origin.y + 80, iv.frame.size.height, iv.frame.size.width);
-            iv.image = [UIImage imageNamed:@"nurupo.png"];
-            [self.view addSubview:iv];
-            [views addObject:iv];
-        }
-    }
-}
 
 - (IBAction)nurupo
 {
-//    int numberOfImages = (int)[views count];
-//    int randNum = arc4random_uniform(numberOfImages);
-//    [views[randNum] removeFromSuperview];
-    UIImage *rawImage = [UIImage imageNamed:@"miku.jpg"];
+    UIImage *rawImage = mainImageView.image;
     
-    UIImage *resizedImage = [self resizeAspectFitWithSize:rawImage size:rawImage.size];
+    //リサイズ
+    resizedImage = [self resizeImage:rawImage toSize:100];
     mainImageView.image = resizedImage;
 }
 
-- (UIImage*)resizeAspectFitWithSize:(UIImage *)srcImg size:(CGSize)size {
+
+
+//画像のリサイズ
+- (UIImage *)resizeImage:(UIImage *)sourceImage toSize:(CGFloat)newSize
+{
+    UIImage *destinationImage = [[UIImage alloc] init];
+    CGFloat currentWidth = sourceImage.size.width;
+    CGFloat currentHeight = sourceImage.size.height;
+    CGFloat newWidth, newHeight;
     
-    CGFloat widthRatio  = size.width  / srcImg.size.width;
-    CGFloat heightRatio = size.height / srcImg.size.height;
-    CGFloat ratio = (widthRatio < heightRatio) ? widthRatio : heightRatio;
+    if (newSize == 0)
+    {
+        newWidth = newHeight = 0;
+    } else if (currentHeight < currentWidth) {
+        newHeight = floorf(currentHeight * newSize / currentWidth);
+        newWidth = newSize;
+    } else if (currentWidth <= currentHeight) {
+        newWidth = floorf(currentWidth * newSize / currentHeight);
+        newHeight = newSize;
+    }
     
-    CGSize resizedSize = CGSizeMake(srcImg.size.width*ratio, srcImg.size.height*ratio);
-    
-    UIGraphicsBeginImageContext(resizedSize);
-    [srcImg drawInRect:CGRectMake(0, 0, resizedSize.width, resizedSize.height)];
-    UIImage* resizedImage = UIGraphicsGetImageFromCurrentImageContext();
-    
+    UIGraphicsBeginImageContext(CGSizeMake(newWidth, newHeight));
+    [sourceImage drawInRect:CGRectMake(0, 0, newWidth, newHeight)];
+    destinationImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
-    return resizedImage;
+    return destinationImage;
 }
+
 
 
 - (IBAction)makeMosaicArt
 {
     //メインスレッドでインジケータを表示
     [SVProgressHUD showWithStatus:@"Analysing..." maskType:SVProgressHUDMaskTypeGradient];
-    
-    timer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(updateProgressBar) userInfo:nil repeats:YES];
-    [timer fire];
-    
+    //    timer = [NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(updateProgressBar) userInfo:nil repeats:YES];
+    //    [timer fire];
     
     
-    //バックグラウンドスレッドでRGB解析
+    //解析
+    if (!views) {
+        [mainImageView removeFromSuperview];
+        
+        views = [[NSMutableArray alloc] init];
+        
+        NSArray *imageViews = [self divideImage:mainImageView.image];
+        
+        for (UIImageView *iv in imageViews) {
+            //TODO: 平均値を取ってくる
+            //float avarageRGB = [self checkRGB:iv];
+            
+            //TODO: 解析したImageViewを1つずつ貼っていく
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.01]];
+            iv.frame = CGRectMake(iv.frame.origin.x, iv.frame.origin.y + 80, iv.frame.size.height, iv.frame.size.width);
+            [views addObject:iv];
+            [self.view addSubview:iv];
+            
+            [self checkRGB:iv];//RGB値のチェック
+        }
+    }
+    
+    
+    //バックグラウンドスレッド
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        [self checkRGB];
+        
     });
 }
 
 
-- (IBAction)reset
-{
-    views = nil;
-    [mainImageView removeFromSuperview];
-    mainImageView = [[UIImageView alloc] initWithFrame:CGRectMake(0, 80, 320, 320)];
-    mainImageView.image = [UIImage imageNamed:@"miku.jpg"];
-//    mainImageView.layer.shouldRasterize = NO;
-//    mainImageView.layer.rasterizationScale = 1.0;
-//    mainImageView.layer.minificationFilter = nil;
-//    mainImageView.layer.magnificationFilter= nil;
-}
 
-
-- (void)checkRGB
+- (void)checkRGB:(UIImageView *)iv
 {
+    //現在解析中のImageViewをcurrentImageViewに表示させる
+    currentImageView.image = iv.image;
+    [currentImageView clipsToBounds];
+    
+    NSLog(@"iv is %@", iv);
+    
     // CGImageを取得する
-    CGImageRef  imageRef = mainImageView.image.CGImage;
+    CGImageRef  imageRef = iv.image.CGImage;
+    
     // データプロバイダを取得する
     CGDataProviderRef dataProvider = CGImageGetDataProvider(imageRef);
     
@@ -164,35 +152,27 @@
     UInt8 b;
     
     
-    
-    
     // 画像全体を１ピクセルずつ走査する
-    for (checkX = 0; checkX < mainImageView.image.size.width; checkX++) {
-        for (int y=0; y< mainImageView.image.size.height; y++) {
+    for (int checkX = 0; checkX < iv.image.size.width; checkX++) {
+        for (int checkY=0; checkY < iv.image.size.height; checkY++) {
             // ピクセルのポインタを取得する
-            pixelPtr = buffer + (int)(y) * bytesPerRow + (int)(checkX) * 4;
+            pixelPtr = buffer + (int)(checkY) * bytesPerRow + (int)(checkX) * 4;
             
             // 色情報を取得する
             r = *(pixelPtr + 2);  // 赤
             g = *(pixelPtr + 1);  // 緑
             b = *(pixelPtr + 0);  // 青
             
-            NSLog(@"x:%d y:%d R:%d G:%d B:%d", checkX, y, r, g, b);
+            //NSLog(@"x:%d y:%d R:%d G:%d B:%d", checkX, checkY, r, g, b);
         }
+        
     }
     CFRelease(dataRef);
-}
-
-
-- (void)updateProgressBar
-{
-    mcProgressBarView.progress = checkX / mainImageView.image.size.width;
-    if (mcProgressBarView.progress >= 1.0) {
-        [timer invalidate];
-        
-        //SVProgressHUDを消す
-        [SVProgressHUD dismiss];
-    }
+    
+    //TODO: RGBの平均値を返す
+    //    float averageRGB = [self getAverageColor];
+    //
+    //    return averageRGB;
 }
 
 
@@ -202,9 +182,9 @@
     NSMutableArray *result = [[NSMutableArray alloc] init];
     int size = 20;
     
-    // 10x10 point で切り取る
-    for (int y=0; y<320; y+=size) {
-        for (int x=0; x<320; x+=size) {
+    // 20x20 point で切り取る
+    for (int y = 0; y < 259; y += size) {
+        for (int x = 0; x < 194; x += size) {
             CGRect rect = CGRectMake(x, y, size, size);
             UIImage *croppedImage = [self imageByCropping:image toRect:rect];
             UIImageView *v = [[UIImageView alloc] initWithFrame:rect];
@@ -230,32 +210,16 @@
 }
 
 
-
-
-//- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+//- (void)updateProgressBar
 //{
-//    // タッチしたら、画像をバラバラにくずす
-//    for (int i=0; i<[views count]; i++) {
-//        [UIView animateWithDuration:0.8 delay:i * 0.05 options:UIViewAnimationOptionCurveEaseIn animations:^{
-//            UIView *v = [views objectAtIndex:i];
-//            v.center = CGPointMake(v.center.x, 600);
-//        } completion:^(BOOL finished) {}];
+//    mcProgressBarView.progress = checkX / mainImageView.image.size.width;
+//    if (mcProgressBarView.progress >= 1.0) {
+//        [timer invalidate];
+//
+//        //SVProgressHUDを消す
+//        [SVProgressHUD dismiss];
 //    }
 //}
-
-//- (UIColor *)getAverageColor
-//{
-//    // Get an averaged color.
-//    self.averagedColor = [UIColor colorWithRed:aveR green:aveG blue:aveB alpha:1.0];
-//    
-//    // Get a complementary color.
-//    aveR = 1.0f - aveR;
-//    aveG = 1.0f - aveG;
-//    aveB = 1.0f - aveB;
-//    self.complementaryColors = [UIColor colorWithRed:aveR green:aveG blue:aveB alpha:1.0];
-//}
-
-
 
 
 @end
