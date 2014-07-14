@@ -151,6 +151,9 @@
     UInt8 g;
     UInt8 b;
     
+    if (!averageRGBArray) {
+        averageRGBArray = [[NSMutableArray alloc] init];
+    }
     
     // 画像全体を１ピクセルずつ走査する
     for (int checkX = 0; checkX < iv.image.size.width; checkX++) {
@@ -166,6 +169,10 @@
             //NSLog(@"x:%d y:%d R:%d G:%d B:%d", checkX, checkY, r, g, b);
         }
         
+        int averageRGB = (int)r + (int)g + (int)b;
+        averageRGB = averageRGB / 3;
+        [averageRGBArray addObject:[NSNumber numberWithInt:averageRGB]];
+        
     }
     CFRelease(dataRef);
     
@@ -173,6 +180,8 @@
     //    float averageRGB = [self getAverageColor];
     //
     //    return averageRGB;
+    
+    NSLog(@"array is %@", averageRGBArray);
 }
 
 
@@ -220,6 +229,8 @@
 //        [SVProgressHUD dismiss];
 //    }
 //}
+
+
 
 
 @end

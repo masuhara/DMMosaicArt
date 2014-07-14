@@ -17,6 +17,8 @@
     IBOutlet UIImageView *currentImageView;
     UIImage *resizedImage;//リサイズ後の画像
     
+    NSMutableArray *averageRGBArray;
+    
     //int checkX;
     //int checkY;
     
